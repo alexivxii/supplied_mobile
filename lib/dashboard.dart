@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'dart:async';
+import 'package:supplied/week_details.dart';
 
 
 class Dashboard extends StatefulWidget{
@@ -104,6 +105,7 @@ class _State extends State<Dashboard> {
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       children: [
+                        /*
                         Container(
                           alignment: Alignment.centerLeft,
                           margin: const EdgeInsets.only(top:10, bottom: 10, left:20, right: 20),
@@ -141,6 +143,7 @@ class _State extends State<Dashboard> {
                             ],
                           ),
                         ),
+                        */
                         FutureBuilder(
                           future: FirebaseFirestore.instance.collection("weeks").get(),
                           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -157,43 +160,53 @@ class _State extends State<Dashboard> {
                                   Map<String, dynamic> data = document?.data() as Map<String, dynamic>;
                                   String _name = data['name'];
                                   int _number = data['item_count'];
+                                  List<dynamic> _groceries_list = data['groceries_list'];
                                   //print(name);
-                                  return Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: const EdgeInsets.only(top:10, bottom: 10, left:20, right: 20),
-                                    padding: const EdgeInsets.only(top:10, bottom: 10, left:20, right: 20),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 2.0,
-                                          blurRadius: 5.0,
-                                          offset: const Offset(0, 3), // changes the position of the shadow
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          _name,
-                                          //snapshot.data?.docs[index].data()!["name"],
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.w500,
+                                  return GestureDetector(
+                                    onTap: (){
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => WeekDetails(week_name: _name, groceries_list_week: _groceries_list),
+                                          ));
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin: const EdgeInsets.only(top:10, bottom: 10, left:20, right: 20),
+                                      padding: const EdgeInsets.only(top:10, bottom: 10, left:20, right: 20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 1.0,
+                                            blurRadius: 3.0,
+                                            offset: const Offset(0, 3), // changes the position of the shadow
                                           ),
-                                        ),
-                                        Text(
-                                          "${_number} items ",
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.w500,
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            _name,
+                                            //snapshot.data?.docs[index].data()!["name"],
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.blue,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          Text(
+                                            "${_number} items ",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.blue,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
@@ -240,6 +253,11 @@ class _Header extends StatelessWidget{
             child: ElevatedButton(
                 onPressed: () {
                   print("Pressed");
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => choosePackage(storeID: snapshot.data.docs[index].id),
+                  //     ));
                 },
                 child: const Text(
                   "Add",
