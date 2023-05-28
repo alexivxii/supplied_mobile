@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "490538811714",
+    "project_id": "supplieddatabase",
+    "storage_bucket": "supplieddatabase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490538811714:android:54316c9efb0f0ecd8048db",
+        "android_client_info": {
+          "package_name": "com.supplied.supplied"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVxJELtTuOUyBZNc5UUnL9SR8ZOaULm28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
