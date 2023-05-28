@@ -158,6 +158,7 @@ class _State extends State<Dashboard> {
                                   QueryDocumentSnapshot<Object?>? document = snapshot.data?.docs[index];
                                   //print(document?.data()!["name"]);
                                   Map<String, dynamic> data = document?.data() as Map<String, dynamic>;
+                                  String? doc_id = document?.id;
                                   String _name = data['name'];
                                   int _number = data['item_count'];
                                   List<dynamic> _groceries_list = data['groceries_list'];
@@ -167,7 +168,7 @@ class _State extends State<Dashboard> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => WeekDetails(week_name: _name, groceries_list_week: _groceries_list),
+                                            builder: (context) => WeekDetails(week_name: _name, groceries_list_week: _groceries_list, document_id: doc_id),
                                           ));
                                     },
                                     child: Container(

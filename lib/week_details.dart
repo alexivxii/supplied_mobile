@@ -8,7 +8,8 @@ class WeekDetails extends StatefulWidget{
 
   List<dynamic> groceries_list_week;
   String week_name;
-  WeekDetails({required this.groceries_list_week, required this.week_name});
+  String? document_id;
+  WeekDetails({required this.groceries_list_week, required this.week_name, required this.document_id});
 
   @override
   State<StatefulWidget> createState() => _State();
@@ -21,46 +22,107 @@ class _State extends State<WeekDetails> {
     super.initState();
   }
 
+  String dropdownValue = 'milk';
+
   void _showAlertDialog(BuildContext context) {
-    String dropdownValue = 'milk';
+
+    print(dropdownValue);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select an item for your list'),
-          content: DropdownButton<String>(
-            value: dropdownValue,
-            onChanged: (String? newValue) {
-              setState(() {
-                dropdownValue = newValue!;
-              });
-            },
-            items: <String>[
-              'milk', 'bread', 'eggs', 'cheese', 'yogurt', 'butter', 'orange juice', 'apple juice', 'soda', 'water', 'beer', 'wine', 'chips', 'cookies', 'crackers'
-            ].map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+        return StatefulBuilder(
+          builder: (context,SetStateSB)=>
+          AlertDialog(
+            title: Text('Select an item for your list'),
+            content: DropdownButton<String>(
+              value: dropdownValue,
+              onChanged: (String? newValue) {
+
+                print("reload");
+
+                setState(() {
+                  dropdownValue = newValue!;
+
+                  // List<String> tempItems = ['milk', 'bread', 'eggs', 'cheese', 'yogurt', 'butter', 'orange juice', 'apple juice', 'soda', 'water', 'beer', 'wine', 'chips', 'cookies', 'crackers'];
+                  // int indexOfProduct = tempItems.indexOf(dropdownValue);
+                  // widget.groceries_list_week[indexOfProduct] = 1;
+
+                });
+
+                SetStateSB((){
+                  dropdownValue = newValue!;
+                });
+
+
+              },
+              items: <String>[
+                'milk', 'bread', 'eggs', 'cheese', 'yogurt', 'butter', 'orange juice', 'apple juice', 'soda', 'water', 'beer', 'wine', 'chips', 'cookies', 'crackers' ,
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Perform some action with the selected option
+                  print('Selected option: $dropdownValue');
+
+                  setState(() {
+                    List<String> tempItems = ['milk', 'bread', 'eggs', 'cheese', 'yogurt', 'butter', 'orange juice', 'apple juice', 'soda', 'water', 'beer', 'wine', 'chips', 'cookies', 'crackers'];
+                    int indexOfProduct = tempItems.indexOf(dropdownValue);
+                    widget.groceries_list_week[indexOfProduct] = 1;
+
+                  });
+
+                  late Map<String, int> groceries_map={
+                    "milk": 0,
+                    "bread": 0,
+                    "eggs": 0,
+                    "cheese": 0,
+                    "yogurt": 0,
+                    "butter": 0,
+                    "orange juice": 0,
+                    "apple juice": 0,
+                    "soda": 0,
+                    "water": 0,
+                    "beer": 0,
+                    "wine": 0,
+                    "chips": 0,
+                    "cookies": 0,
+                    "crackers": 0
+                  };
+
+                  int index = 0;
+                  for(String item in groceries_map.keys){
+                    groceries_map[item] = int.parse(widget.groceries_list_week[index].toString());
+                    index++;
+                  }
+
+                  List<String> itemsWithValueOne = groceries_map.entries
+                      .where((entry) => entry.value == 1)
+                      .map((entry) => entry.key)
+                      .toList();
+
+                  print(itemsWithValueOne.length);
+
+                  FirebaseFirestore.instance.collection('weeks').doc(widget.document_id).update({'groceries_list': widget.groceries_list_week, 'item_count': itemsWithValueOne.length});
+
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Perform some action with the selected option
-                print('Selected option: $dropdownValue');
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
         );
       },
     );
