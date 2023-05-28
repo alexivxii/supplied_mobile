@@ -131,7 +131,7 @@ class _State extends State<Dashboard> {
                                 ),
                               ),
                               Text(
-                                "11 items",
+                                "3 items",
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.blue,
@@ -140,6 +140,66 @@ class _State extends State<Dashboard> {
                               ),
                             ],
                           ),
+                        ),
+                        FutureBuilder(
+                          future: FirebaseFirestore.instance.collection("weeks").get(),
+                          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+                            if(snapshot.hasData){
+                              print(snapshot.data?.docs.length);
+                              return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                itemCount: snapshot.data?.docs.length,
+                                itemBuilder: (BuildContext context, int index){
+                                  QueryDocumentSnapshot<Object?>? document = snapshot.data?.docs[index];
+                                  //print(document?.data()!["name"]);
+                                  Map<String, dynamic> data = document?.data() as Map<String, dynamic>;
+                                  String _name = data['name'];
+                                  int _number = data['item_count'];
+                                  //print(name);
+                                  return Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: const EdgeInsets.only(top:10, bottom: 10, left:20, right: 20),
+                                    padding: const EdgeInsets.only(top:10, bottom: 10, left:20, right: 20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 2.0,
+                                          blurRadius: 5.0,
+                                          offset: const Offset(0, 3), // changes the position of the shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          _name,
+                                          //snapshot.data?.docs[index].data()!["name"],
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${_number} items ",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            } else return Container();
+                          },
                         ),
                       ],
                     ),
