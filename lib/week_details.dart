@@ -21,6 +21,51 @@ class _State extends State<WeekDetails> {
     super.initState();
   }
 
+  void _showAlertDialog(BuildContext context) {
+    String dropdownValue = 'milk';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select an item for your list'),
+          content: DropdownButton<String>(
+            value: dropdownValue,
+            onChanged: (String? newValue) {
+              setState(() {
+                dropdownValue = newValue!;
+              });
+            },
+            items: <String>[
+              'milk', 'bread', 'eggs', 'cheese', 'yogurt', 'butter', 'orange juice', 'apple juice', 'soda', 'water', 'beer', 'wine', 'chips', 'cookies', 'crackers'
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Perform some action with the selected option
+                print('Selected option: $dropdownValue');
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -184,7 +229,7 @@ class _State extends State<WeekDetails> {
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-
+          _showAlertDialog(context);
           },
         tooltip: 'Add item',
         child: const Icon(Icons.add),
