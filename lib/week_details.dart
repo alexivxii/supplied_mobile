@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'dart:async';
 
+import 'package:supplied/dashboard.dart';
+
 class WeekDetails extends StatefulWidget{
 
   List<dynamic> groceries_list_week;
@@ -195,7 +197,9 @@ class _State extends State<WeekDetails> {
                           color: Colors.grey,
                           icon: Icon(Icons.arrow_back_ios),
                           onPressed:(){
-                            Navigator.pop(context);
+                            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                builder: (context) => Dashboard()), (Route route) => false);
+                            
                           },
                         ),
                       ),

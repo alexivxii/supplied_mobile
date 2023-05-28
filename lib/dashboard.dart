@@ -62,9 +62,26 @@ class _State extends State<Dashboard> {
                     ),
                     Container(
                       child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             print("Pressed");
-                            },
+
+                            //int documentCount = await FirebaseFirestore.instance.collection('products').snapshots().length;
+
+                            QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('products').get();
+
+                            int documentCount = snapshot.size;
+
+                            print(documentCount);
+                            String weekName = "Week ${documentCount+1}";
+                            print(weekName);
+
+                            FirebaseFirestore.instance.collection('weeks').doc().set({'name':weekName,'groceries_list': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 'item_count': 0});
+
+                            setState(() {
+
+                            });
+
+                          },
                           child: const Text(
                             "Add list",
                             style: TextStyle(
