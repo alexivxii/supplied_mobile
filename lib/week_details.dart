@@ -9,9 +9,12 @@ import 'package:supplied/dashboard.dart';
 class WeekDetails extends StatefulWidget{
 
   List<dynamic> groceries_list_week;
+  List<int> all_groceries;
   String week_name;
   String? document_id;
-  WeekDetails({required this.groceries_list_week, required this.week_name, required this.document_id});
+  int week_number;
+
+  WeekDetails({required this.groceries_list_week, required this.week_name, required this.document_id, required this.week_number, required this.all_groceries});
 
   @override
   State<StatefulWidget> createState() => _State();
@@ -25,6 +28,9 @@ class _State extends State<WeekDetails> {
   }
 
   String dropdownValue = 'milk';
+  List<int> last4weeks = [];
+
+  
 
   void _showAlertDialog(BuildContext context) {
 
@@ -214,7 +220,11 @@ class _State extends State<WeekDetails> {
                       Container(
                         child: ElevatedButton(
                             onPressed: () {
-                              print("Pressed");
+                              if(widget.week_number > 4){
+                                print("Pressed");
+
+                              }
+
                             },
                             child: const Text(
                               "Prediction",

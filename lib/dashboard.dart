@@ -28,6 +28,12 @@ class _State extends State<Dashboard> {
     Size screenSize = MediaQuery.of(context).size;
     double screenTopPadding = MediaQuery.of(context).viewPadding.top;
 
+    //All weeks groceries combined
+
+    List<int> all_weeks_groceries = [];
+    int? nrOfDocs = 0;
+    int docsIterator = 0;
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -62,24 +68,35 @@ class _State extends State<Dashboard> {
                     ),
                     Container(
                       child: ElevatedButton(
-                          onPressed: () async {
+                          onPressed:() async {
                             print("Pressed");
 
-                            //int documentCount = await FirebaseFirestore.instance.collection('products').snapshots().length;
+                            // int documentCount = await FirebaseFirestore.instance.collection('weeks').snapshots().length;
+                            // print(documentCount);
+                            // String weekName = "Week ${documentCount+1}";
+                            // print(weekName);
+                            //
+                            // FirebaseFirestore.instance.collection('weeks').doc().set({'name':weekName,'groceries_list': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 'item_count': 0});
+                            //
+                            // setState(() {
+                            //
+                            // });
 
-                            QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('products').get();
 
-                            int documentCount = snapshot.size;
+                            FirebaseFirestore.instance.collection('weeks').get().then((QuerySnapshot snapshot) {
+                              int documentCount = snapshot.size;
+                              print(documentCount);
+                              String weekName = "Week ${documentCount+1}";
+                              print(weekName);
 
-                            print(documentCount);
-                            String weekName = "Week ${documentCount+1}";
-                            print(weekName);
+                              FirebaseFirestore.instance.collection('weeks').doc('${weekName}').set({'name':weekName,'groceries_list': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 'item_count': 0, 'week_nr': documentCount+1});
 
-                            FirebaseFirestore.instance.collection('weeks').doc().set({'name':weekName,'groceries_list': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 'item_count': 0});
+                              setState(() {
 
-                            setState(() {
-
+                              });
                             });
+
+
 
                           },
                           child: const Text(
@@ -166,6 +183,7 @@ class _State extends State<Dashboard> {
                           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
                             if(snapshot.hasData){
                               print(snapshot.data?.docs.length);
+                              nrOfDocs = snapshot.data?.docs.length;
                               return ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.zero,
@@ -178,14 +196,27 @@ class _State extends State<Dashboard> {
                                   String? doc_id = document?.id;
                                   String _name = data['name'];
                                   int _number = data['item_count'];
+                                  int _week_nr = data['week_nr'];
                                   List<dynamic> _groceries_list = data['groceries_list'];
+
+                                  if(docsIterator<nrOfDocs!){
+                                    List<int> convertedListTemp = _groceries_list.map((element) => element as int).toList();
+                                    all_weeks_groceries.addAll(convertedListTemp);
+
+                                    print("Week nr: ${_week_nr}");
+                                    print(all_weeks_groceries.length);
+                                    print(all_weeks_groceries);
+
+                                    docsIterator++;
+                                  }
+
                                   //print(name);
                                   return GestureDetector(
                                     onTap: (){
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => WeekDetails(week_name: _name, groceries_list_week: _groceries_list, document_id: doc_id),
+                                            builder: (context) => WeekDetails(week_name: _name, groceries_list_week: _groceries_list, document_id: doc_id, week_number: _week_nr, all_groceries: all_weeks_groceries),
                                           ));
                                     },
                                     child: Container(
